@@ -1,0 +1,194 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const games = await getCollection('games');
+  return games.map((game) => ({
+    params: { slug: game.id },
+    props: { game },
+  }));
+}
+
+const { game } = Astro.props;
+const g = game.data;
+
+const players =
+  g.snapshot.players.min === g.snapshot.players.max
+    ? `${g.snapshot.players.max} players`
+    : `${g.snapshot.players.min}–${g.snapshot.players.max} players`;
+const time = `${g.snapshot.time.min}–${g.snapshot.time.max} min`;
+---
+
+<Base title={`${g.title} — Turn One`} description={g.snapshot.premise}>
+  <article data-pagefind-body>
+    <h1 class="font-[var(--font-display)] text-3xl font-bold tracking-tight">{g.title}</h1>
+
+    {/* aliases are indexed so "Perudo" finds Liar's Dice — TDD §7.3 */}
+    {g.aliases.length > 0 && (
+      <p class="sr-only" data-pagefind-index-attrs="content">
+        Also known as {g.aliases.join(', ')}
+      </p>
+    )}
+
+    <!-- 1. Snapshot -->
+    <ul class="mt-3 flex flex-wrap gap-2 text-xs" role="list">
+      <li class="rounded bg-[var(--color-felt-soft)] px-2 py-1">{players}</li>
+      <li class="rounded bg-[var(--color-felt-soft)] px-2 py-1">{time}</li>
+      {g.complexity && (
+        <li class="rounded bg-[var(--color-felt-soft)] px-2 py-1">Weight {g.complexity}</li>
+      )}
+    </ul>
+    <p class="mt-3 text-[var(--color-ink-soft)]">{g.snapshot.premise}</p>
+
+    <!-- Reading mode toggle. Refresher is the default — TDD §4.2 -->
+    <div class="mt-6 flex gap-2 border-y border-[var(--color-rule)] py-3">
+      <button
+        id="mode-refresher"
+        type="button"
+        aria-pressed="true"
+        class="rounded border border-[var(--color-felt)] px-3 py-1 text-sm font-medium"
+      >
+        Refresher
+      </button>
+      <button
+        id="mode-teach"
+        type="button"
+        aria-pressed="false"
+        class="rounded border border-[var(--color-rule)] px-3 py-1 text-sm"
+      >
+        The Teach
+      </button>
+    </div>
+
+    <div id="guide" data-mode="refresher">
+      <!-- 2. Goal -->
+      <section class="mt-8">
+        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Goal</h2>
+        <p class="mt-2 text-lg">{g.goal}</p>
+      </section>
+
+      <!-- 3. Setup — hidden in Refresher -->
+      <section class="mt-8" data-teach-only>
+        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Setup</h2>
+        <ol class="mt-2 list-decimal space-y-1 pl-5">
+          {g.setup.map((step) => <li>{step}</li>)}
+        </ol>
+      </section>
+
+      <!-- 4. The Loop -->
+      <section class="mt-8">
+        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">On your turn</h2>
+        <ol class="mt-2 list-decimal space-y-1 pl-5">
+          {g.loop.map((step) => <li>{step}</li>)}
+        </ol>
+      </section>
+
+      <!-- 5. Key Rules — hidden in Refresher -->
+      <section class="mt-8" data-teach-only>
+        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Key rules</h2>
+        <ul class="mt-2 list-disc space-y-1 pl-5">
+          {g.key_rules.map((rule) => <li>{rule}</li>)}
+        </ul>
+      </section>
+
+      <!-- 7. Commonly Forgotten — visually distinct, TDD §4.1 -->
+      <section class="mt-8 rounded border border-[var(--color-rule)] border-l-4 border-l-[var(--color-brass)] bg-[var(--color-surface)] p-4">
+        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-brass)]">Commonly forgotten</h2>
+        <ul class="mt-2 list-disc space-y-1 pl-5">
+          {g.forgotten.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <!-- 6. Ending & Scoring -->
+      <section class="mt-8">
+        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Ending &amp; scoring</h2>
+        <p class="mt-2">{g.ending.trigger}</p>
+        <ul class="mt-2 list-disc space-y-1 pl-5">
+          {g.ending.scoring.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <!-- 8. Tips — hidden in Refresher -->
+      <section class="mt-8" data-teach-only>
+        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Tips</h2>
+        <ul class="mt-2 list-disc space-y-1 pl-5">
+          {g.tips.map((tip) => <li>{tip}</li>)}
+        </ul>
+      </section>
+
+      <!-- 9. Variants — hidden in Refresher -->
+      {g.variants.length > 0 && (
+        <section class="mt-8" data-teach-only>
+          <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Variants</h2>
+          <dl class="mt-2 space-y-2">
+            {g.variants.map((v) => (
+              <div>
+                <dt class="font-semibold">{v.name}</dt>
+                <dd class="text-[var(--color-ink-soft)]">{v.text}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
+
+      <!-- 10. Glossary — hidden in Refresher -->
+      {g.glossary.length > 0 && (
+        <section class="mt-8" data-teach-only>
+          <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Glossary</h2>
+          <dl class="mt-2 space-y-1">
+            {g.glossary.map((entry) => (
+              <div>
+                <dt class="inline font-semibold">{entry.term}. </dt>
+                <dd class="inline text-[var(--color-ink-soft)]">{entry.definition}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
+    </div>
+
+    <!-- Every guide links out to the real rulebook. TDD §7.2 -->
+    <p class="mt-10 border-t border-[var(--color-rule)] pt-4 text-sm text-[var(--color-ink-soft)]">
+      This is a reminder, not the rulebook.
+      {g.rulebook_url && (
+        <> <a href={g.rulebook_url} rel="nofollow noopener" class="underline">Official rules</a>.</>
+      )}
+      Something wrong? <a href="/report" class="underline">Tell us</a>.
+    </p>
+  </article>
+</Base>
+
+<script>
+  // Reading-mode toggle. Vanilla by design — no UI framework, see CLAUDE.md.
+  const guide = document.getElementById('guide');
+  const refresherBtn = document.getElementById('mode-refresher');
+  const teachBtn = document.getElementById('mode-teach');
+
+  function apply(mode: string) {
+    if (!guide) return;
+    guide.dataset.mode = mode;
+    const teach = mode === 'teach';
+    document.querySelectorAll<HTMLElement>('[data-teach-only]').forEach((el) => {
+      el.hidden = !teach;
+    });
+    refresherBtn?.setAttribute('aria-pressed', String(!teach));
+    teachBtn?.setAttribute('aria-pressed', String(teach));
+    try {
+      localStorage.setItem('turnone:mode', mode);
+    } catch {
+      /* private browsing — mode just won't persist */
+    }
+  }
+
+  let saved = 'refresher';
+  try {
+    saved = localStorage.getItem('turnone:mode') ?? 'refresher';
+  } catch {
+    /* ignore */
+  }
+  apply(saved);
+
+  refresherBtn?.addEventListener('click', () => apply('refresher'));
+  teachBtn?.addEventListener('click', () => apply('teach'));
+</script>

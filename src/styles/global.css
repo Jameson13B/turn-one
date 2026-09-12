@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+/* Turn One design tokens. Light is the base; dark overrides only the values. */
+@theme {
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Source Serif 4", Georgia, serif;
+
+  --color-ground: #f3f5f1;
+  --color-surface: #ffffff;
+  --color-ink: #171c18;
+  --color-ink-soft: #4a544c;
+  --color-rule: #d6dcd4;
+  --color-felt: #1f5d42;
+  --color-felt-soft: #e3efe8;
+  --color-brass: #9a6712;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-ground: #101410;
+    --color-surface: #181d19;
+    --color-ink: #e7ebe4;
+    --color-ink-soft: #a9b3aa;
+    --color-rule: #2c352e;
+    --color-felt: #63c295;
+    --color-felt-soft: #14291f;
+    --color-brass: #dca94e;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-ground: #101410;
+  --color-surface: #181d19;
+  --color-ink: #e7ebe4;
+  --color-ink-soft: #a9b3aa;
+  --color-rule: #2c352e;
+  --color-felt: #63c295;
+  --color-felt-soft: #14291f;
+  --color-brass: #dca94e;
+}
+
+body {
+  background: var(--color-ground);
+  color: var(--color-ink);
+}
+
+/* Table mode: bumps type for reading at arm's length mid-game. */
+:root[data-table-mode="on"] {
+  font-size: 19px;
+}

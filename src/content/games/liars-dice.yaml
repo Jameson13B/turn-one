@@ -1,0 +1,71 @@
+title: Liar's Dice
+aliases: [Perudo, Dudo, Pirate's Dice, Bluff, Cacho, Mexacali]
+category: dice
+complexity: 1.4
+tags: [bluffing, deduction, elimination, public-domain]
+contributors: [jameson]
+
+snapshot:
+  players: { min: 2, max: 6, best: 5 }
+  time: { min: 15, max: 30 }
+  equipment: [dice, cups]
+  premise: Bid on how many dice of a face are hidden under every cup at the table, and lie about it.
+
+goal: >-
+  Be the last player with dice left. You lose dice by making bids that get called,
+  or by wrongly calling someone else's.
+
+setup:
+  - Give every player 5 dice and an opaque cup.
+  - Everyone rolls their dice under the cup and peeks without showing anyone.
+  - Pick a starting player however you like; play passes clockwise.
+
+loop:
+  - The first player makes a bid - a quantity and a face, like "four fives".
+  - A bid claims that many dice of that face exist under all cups combined, not just their own.
+  - The next player either raises the bid or calls the previous bid a lie.
+  - Raising means naming a higher quantity, or the same quantity with a higher face.
+  - Calling ends the round immediately - everyone lifts their cups and counts.
+
+key_rules:
+  - Ones are wild and count as every face for the purposes of any bid.
+  - You can never lower the quantity, only raise it or keep it and raise the face.
+  - If the actual count meets or beats the bid, the caller loses one die.
+  - If the actual count falls short, the bidder loses one die.
+  - Whoever lost a die starts the bidding for the next round.
+  - A player with no dice left is out of the game.
+
+ending:
+  trigger: The game ends when only one player still has dice.
+  scoring:
+    - There is no score - the last player holding any dice wins outright.
+
+forgotten:
+  - Ones are wild, which means a bid of "four fives" is met by three fives and one ace.
+  - The bid counts every die at the table, including the ones you cannot see.
+  - You may bid a quantity higher than the dice you hold - that is the entire point.
+  - Only one die is lost per round, never more, no matter how wrong the bid was.
+  - The player who lost the die opens the next round, not the player to their left.
+
+tips:
+  - Your own five dice are roughly a third of a five-player table - bid from what you hold.
+  - Raising the face rather than the quantity is the cheaper raise; use it to stall.
+  - Track who has few dice left; they bid more conservatively and are easier to read.
+
+variants:
+  - name: Palifico
+    text: >-
+      When a player drops to a single die, that round is played with ones no longer wild,
+      and the face named in the opening bid cannot be changed by later bids.
+  - name: Calzone / exact call
+    text: >-
+      A player may call the bid exactly right rather than a lie. If the count matches the
+      bid precisely, the caller regains a lost die instead of losing one.
+
+glossary:
+  - term: Bid
+    definition: A claim of how many dice showing a given face are under all cups.
+  - term: Wild
+    definition: A face that counts as any other face - ones, in the standard rules.
+  - term: Dudo
+    definition: Spanish for "I doubt it" - the call that challenges a bid.

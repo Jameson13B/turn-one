@@ -1,0 +1,24 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# pagefind
+public/pagefind/
+
+# netlify
+.netlify/
+
+# environment — the GitHub App private key lives here, never in git
+.env
+.env.*
+!.env.example
+
+# macOS
+.DS_Store
+
+# logs
+*.log
+npm-debug.log*

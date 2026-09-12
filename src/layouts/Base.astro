@@ -1,0 +1,41 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Quick manuals for tabletop games.' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+  </head>
+  <body class="min-h-screen font-[var(--font-body)] antialiased">
+    <header class="border-b border-[var(--color-rule)] bg-[var(--color-surface)]">
+      <div class="mx-auto flex max-w-3xl items-baseline justify-between px-4 py-4">
+        <a href="/" class="font-[var(--font-display)] text-lg font-bold tracking-tight no-underline">
+          Turn&nbsp;One
+        </a>
+        <span class="text-xs uppercase tracking-widest text-[var(--color-ink-soft)]">
+          by Atomic10
+        </span>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-3xl px-4 py-8">
+      <slot />
+    </main>
+
+    <footer class="mx-auto max-w-3xl px-4 py-10 text-xs text-[var(--color-ink-soft)]">
+      Guides are reminders, not rulebooks. Content licensed CC BY-SA 4.0.
+    </footer>
+  </body>
+</html>

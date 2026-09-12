@@ -1,0 +1,73 @@
+title: Hearts
+aliases: [Black Lady, Black Maria, Chase the Lady]
+category: card
+complexity: 1.8
+tags: [trick-taking, public-domain, standard-deck, avoidance]
+contributors: [jameson]
+
+snapshot:
+  players: { min: 3, max: 6, best: 4 }
+  time: { min: 20, max: 45 }
+  equipment: [standard deck]
+  premise: A trick-taking game where you are trying hard not to win tricks.
+
+goal: >-
+  Score the fewest points. Every heart costs 1 point and the Queen of Spades costs 13,
+  so you want to avoid taking them in tricks.
+
+setup:
+  - Use a standard 52-card deck. With 4 players, deal all 13 cards to each.
+  - Aces are high; there is no trump suit.
+  - Before play, each player passes 3 cards face down to another player.
+  - The passing direction rotates each hand - left, right, across, then no pass at all.
+  - Look at what you were passed only after you have passed your own three.
+
+loop:
+  - Whoever holds the 2 of clubs leads it to start the first trick.
+  - Play continues clockwise, one card each.
+  - You must follow the suit that was led if you can.
+  - If you cannot follow suit, play any card - this is how you dump hearts and the Queen.
+  - The highest card of the led suit wins the trick and leads the next one.
+
+key_rules:
+  - You may not lead hearts until hearts have been broken.
+  - Hearts are broken once a heart or the Queen of Spades has been discarded off-suit.
+  - No points may be played on the very first trick, including the Queen of Spades.
+  - Winning a trick is neutral - only the point cards inside it matter.
+  - If you have nothing but hearts, you may lead them even if they are not broken.
+
+ending:
+  trigger: The game ends after the hand in which any player reaches 100 points.
+  scoring:
+    - 1 point for each heart taken in a trick.
+    - 13 points for the Queen of Spades.
+    - The player with the lowest total score wins.
+
+forgotten:
+  - Hearts cannot be led until broken - this trips up new players almost every game.
+  - The fourth hand of each passing cycle is a hold hand with no passing at all.
+  - Shooting the moon - taking all 13 hearts and the Queen - gives everyone else 26 instead.
+  - Points cannot be dumped on the opening trick, so the Queen is safe for exactly one round.
+
+tips:
+  - Void yourself in a suit early so you have somewhere to dump the Queen.
+  - Holding the Ace or King of spades is dangerous unless you also hold low spades as cover.
+  - Passing three high spades is safe but wastes your own protection - pass one, keep cover.
+
+variants:
+  - name: Shooting the sun
+    text: >-
+      Some groups add a bonus for taking every trick in the hand, worth 52 points against
+      the other players instead of 26. Agree before dealing.
+  - name: Jack of Diamonds
+    text: >-
+      The Jack of Diamonds is worth minus 10 points to whoever takes it, giving players a
+      reason to fight for a trick.
+
+glossary:
+  - term: Trick
+    definition: One card played by each player; the highest card of the led suit wins it.
+  - term: Void
+    definition: Holding no cards of a given suit, letting you discard anything.
+  - term: Breaking hearts
+    definition: The first time a heart or the Queen is played off-suit, unlocking heart leads.

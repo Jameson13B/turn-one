@@ -1,0 +1,27 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Word budget and slug uniqueness — the checks Zod can't express.
+      - name: Validate guide content
+        run: npm run validate
+
+      # The schema itself is enforced here: a malformed guide fails the build.
+      - name: Build
+        run: npm run build

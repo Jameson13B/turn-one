@@ -1,0 +1,77 @@
+title: Wingspan
+aliases: []
+category: board
+year: 2019
+publisher: Stonemaier Games
+designers: [Elizabeth Hargrave]
+complexity: 2.4
+tags: [engine-building, set-collection, card-drafting, hand-management]
+rulebook_url: https://stonemaiergames.com/games/wingspan/rules/
+contributors: [jameson]
+
+snapshot:
+  players: { min: 1, max: 5, best: 3 }
+  time: { min: 40, max: 70 }
+  equipment: [cards, dice, board, tokens]
+  premise: Attract birds to your wildlife preserve over four increasingly short rounds.
+
+goal: >-
+  Score the most points from birds played, bonus cards, end-of-round goals, eggs,
+  cached food, and cards tucked under birds.
+
+setup:
+  - Give each player a player mat, 8 action cubes, 5 bird cards, 5 food tokens, and 2 bonus cards.
+  - Each player keeps bird cards and food totaling 5, discarding one food for every bird card kept.
+  - Each player keeps 1 bonus card and discards the other.
+  - Fill the birdfeeder with all 5 food dice and reveal 3 bird cards on the tray.
+  - Place the goal board and set the 4 end-of-round goal tiles.
+
+loop:
+  - On your turn take exactly one of four actions, then pass.
+  - Play a bird from hand into a habitat, paying its food cost and any egg cost for the column.
+  - Gain food - take dice from the birdfeeder, then activate forest birds.
+  - Lay eggs - place eggs on your birds, then activate grassland birds.
+  - Draw bird cards - take from the tray or deck, then activate wetland birds.
+
+key_rules:
+  - Each habitat row gives more when you place your cube further right, but costs more to reach.
+  - Activating a habitat triggers every bird already in that row, not just the newest one.
+  - Playing a bird in columns 2 and beyond costs eggs on top of its food cost.
+  - Each bird has an egg limit shown on its card and cannot hold more.
+  - Rounds get shorter - 8 turns, then 7, then 6, then 5.
+
+ending:
+  trigger: The game ends when the fourth round's turns are used up.
+  scoring:
+    - Points printed on each bird you played.
+    - Bonus card points.
+    - End-of-round goal points from the goal board.
+    - 1 point per egg on any bird card.
+    - 1 point per food cached on a bird card.
+    - 1 point per card tucked under a bird.
+
+forgotten:
+  - Birds in a row activate from right to left, not left to right.
+  - Brown powers trigger every time the row is activated; white powers fire only when the bird is played.
+  - If the birdfeeder holds only one food type, you may reroll all dice before taking one.
+  - Eggs spent to play a bird come off your own birds and are gone - they do not score.
+  - Tucking a card under a bird is worth a point even though the card is face down.
+
+tips:
+  - Eggs are the densest late-game points - the lay-eggs action pays off hardest in round 4.
+  - Read your bonus card before your first bird; it often decides which habitat to build.
+  - A cheap bird that activates every round usually beats an expensive one that scores once.
+
+variants:
+  - name: Automa (solo)
+    text: >-
+      Play against the Automa deck over four rounds, competing for end-of-round goals.
+      The Automa does not play birds or take food; it blocks goal spaces and draws cards.
+
+glossary:
+  - term: Tuck
+    definition: Slide a bird card face-down under a bird on your mat. Worth 1 point.
+  - term: Cache
+    definition: Store a food token on a bird card. Worth 1 point and not spendable.
+  - term: Birdfeeder
+    definition: The dice tower holding the 5 food dice you draw food from.
