@@ -27,7 +27,10 @@ const games = defineCollection({
     designers: z.array(z.string()).default([]),
     complexity: z.number().min(1).max(5).optional(),
     tags: z.array(z.string()).default([]),
-    rulebook_url: z.string().url().optional(),
+    // Required — CLAUDE.md: "Every guide links to its official rulebook in
+    // the footer." Traditional/public-domain games without a publisher link
+    // to the most authoritative public rules reference instead.
+    rulebook_url: z.string().url(),
     contributors: z.array(z.string()).default([]),
 
     // --- the Atomic10 format: ten blocks, in order ---

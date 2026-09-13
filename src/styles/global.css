@@ -1,9 +1,13 @@
 @import "tailwindcss";
 
+@import "@fontsource/space-grotesk/600.css";
+@import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/newsreader/400.css";
+
 /* Turn One design tokens. Light is the base; dark overrides only the values. */
 @theme {
-  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Source Serif 4", Georgia, serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Newsreader", Georgia, serif;
 
   --color-ground: #f3f5f1;
   --color-surface: #ffffff;
@@ -12,7 +16,23 @@
   --color-rule: #d6dcd4;
   --color-felt: #1f5d42;
   --color-felt-soft: #e3efe8;
+  --color-felt-contrast: #ffffff;
   --color-brass: #9a6712;
+  --color-brass-soft: #f5ead0;
+
+  /* Category tiles — stand in for publisher cover art, one hue per
+     src/content.config.ts category enum. Text on a tile always uses
+     --color-tile-contrast, calibrated against every value below. */
+  --color-cat-board: #8a5a2e;
+  --color-cat-card: #6b3a52;
+  --color-cat-dice: #35506b;
+  --color-cat-party: #a44b6b;
+  --color-cat-tile: #7a7a2e;
+  --color-cat-pen_paper: #4a5568;
+  --color-cat-dexterity: #a85c19;
+  --color-cat-word: #2f6f6a;
+  --color-cat-other: #6b6558;
+  --color-tile-contrast: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,7 +44,20 @@
     --color-rule: #2c352e;
     --color-felt: #63c295;
     --color-felt-soft: #14291f;
+    --color-felt-contrast: #101410;
     --color-brass: #dca94e;
+    --color-brass-soft: #2b2313;
+
+    --color-cat-board: #c98f52;
+    --color-cat-card: #b87ea0;
+    --color-cat-dice: #7fa3c4;
+    --color-cat-party: #d98cae;
+    --color-cat-tile: #b8b854;
+    --color-cat-pen_paper: #9aa7bd;
+    --color-cat-dexterity: #dd9a55;
+    --color-cat-word: #5fb0a8;
+    --color-cat-other: #a89f8c;
+    --color-tile-contrast: #101410;
   }
 }
 
@@ -36,7 +69,20 @@
   --color-rule: #2c352e;
   --color-felt: #63c295;
   --color-felt-soft: #14291f;
+  --color-felt-contrast: #101410;
   --color-brass: #dca94e;
+  --color-brass-soft: #2b2313;
+
+  --color-cat-board: #c98f52;
+  --color-cat-card: #b87ea0;
+  --color-cat-dice: #7fa3c4;
+  --color-cat-party: #d98cae;
+  --color-cat-tile: #b8b854;
+  --color-cat-pen_paper: #9aa7bd;
+  --color-cat-dexterity: #dd9a55;
+  --color-cat-word: #5fb0a8;
+  --color-cat-other: #a89f8c;
+  --color-tile-contrast: #101410;
 }
 
 body {
@@ -47,4 +93,47 @@ body {
 /* Table mode: bumps type for reading at arm's length mid-game. */
 :root[data-table-mode="on"] {
   font-size: 19px;
+}
+
+/* Page-turn navigation — overdrive direction A. Keyframes referenced by the
+   `pageTurn` animation object passed to transition:animate in Base.astro;
+   Astro generates the ::view-transition-old/new(main-content) rules itself
+   from that object. Astro only auto-guards its own built-in fade/slide
+   presets under prefers-reduced-motion — a custom animation object like
+   this one is NOT auto-guarded (confirmed by testing, not assumed), so the
+   no-op overrides below carry that responsibility. Browsers without the
+   View Transitions API still fall back to a plain navigation regardless. */
+@keyframes turn-one-page-out {
+  to {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+
+@keyframes turn-one-page-in {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+}
+
+@keyframes turn-one-page-out-reverse {
+  to {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+}
+
+@keyframes turn-one-page-in-reverse {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes turn-one-page-out { to {} }
+  @keyframes turn-one-page-in { from {} }
+  @keyframes turn-one-page-out-reverse { to {} }
+  @keyframes turn-one-page-in-reverse { from {} }
 }

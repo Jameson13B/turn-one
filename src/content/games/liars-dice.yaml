@@ -3,6 +3,7 @@ aliases: [Perudo, Dudo, Pirate's Dice, Bluff, Cacho, Mexacali]
 category: dice
 complexity: 1.4
 tags: [bluffing, deduction, elimination, public-domain]
+rulebook_url: https://gamerules.com/rules/perudo/
 contributors: [jameson]
 
 snapshot:

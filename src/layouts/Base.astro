@@ -1,5 +1,25 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
+
+// Custom page-turn animation for overdrive direction A. Astro generates the
+// ::view-transition-old/new(main-content) rules from this object directly,
+// so it can't collide with Astro's own default fade the way raw global CSS
+// targeting the same pseudo-elements did (that was the first, broken take).
+// TransitionAnimateValue requires {forwards, backwards}, not a bare
+// {old, new} pair — that mismatch is what threw during the build.
+const outEasing = 'cubic-bezier(0.4, 0, 1, 1)';
+const inEasing = 'cubic-bezier(0, 0, 0.2, 1)';
+const pageTurn = {
+  forwards: {
+    old: { name: 'turn-one-page-out', duration: '220ms', easing: outEasing, fillMode: 'both' },
+    new: { name: 'turn-one-page-in', duration: '260ms', easing: inEasing, fillMode: 'both' },
+  },
+  backwards: {
+    old: { name: 'turn-one-page-out-reverse', duration: '220ms', easing: outEasing, fillMode: 'both' },
+    new: { name: 'turn-one-page-in-reverse', duration: '260ms', easing: inEasing, fillMode: 'both' },
+  },
+};
 
 interface Props {
   title: string;
@@ -14,14 +34,20 @@ const { title, description = 'Quick manuals for tabletop games.' } = Astro.props
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f5d42'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='19' fill='%23f3f5f1' text-anchor='middle'%3E1%3C/text%3E%3C/svg%3E"
+    />
+    <ClientRouter />
   </head>
-  <body class="min-h-screen font-[var(--font-body)] antialiased">
+  <body class="min-h-screen font-body antialiased">
     <header class="border-b border-[var(--color-rule)] bg-[var(--color-surface)]">
       <div class="mx-auto flex max-w-3xl items-baseline justify-between px-4 py-4">
-        <a href="/" class="font-[var(--font-display)] text-lg font-bold tracking-tight no-underline">
+        <a href="/" class="font-display text-lg font-bold tracking-tight no-underline">
           Turn&nbsp;One
         </a>
         <span class="text-xs uppercase tracking-widest text-[var(--color-ink-soft)]">
@@ -30,7 +56,7 @@ const { title, description = 'Quick manuals for tabletop games.' } = Astro.props
       </div>
     </header>
 
-    <main class="mx-auto max-w-3xl px-4 py-8">
+    <main class="mx-auto max-w-3xl px-4 py-8" transition:name="main-content" transition:animate={pageTurn}>
       <slot />
     </main>
 

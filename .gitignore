@@ -22,3 +22,7 @@ public/pagefind/
 # logs
 *.log
 npm-debug.log*
+
+# impeccable local session cache — critique reports under .impeccable/critique/
+# are kept and versioned; this is per-session edit bookkeeping only
+.impeccable/hook.cache.json

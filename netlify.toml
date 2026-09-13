@@ -1,0 +1,43 @@
+# Netlify configuration for Turn One.
+#
+# Keeping these in the repo rather than the dashboard means the build settings
+# are version-controlled and identical for every deploy and deploy preview.
+# Values set here OVERRIDE whatever is configured in the Netlify UI.
+
+[build]
+  # astro build emits static HTML to dist/, then pagefind indexes that HTML
+  # in place and writes dist/pagefind/. Both steps must run.
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Astro 5 requires Node 18.17.1+ / 20.3+ / 22+. Pin it so a change to
+  # Netlify's default image can't silently break the build.
+  NODE_VERSION = "22"
+
+  # Netlify skips devDependencies in some configurations. Astro, Tailwind and
+  # Pagefind are all devDeps or build-time deps, so they must be installed.
+  NPM_FLAGS = "--include=dev"
+
+# Deploy previews for pull requests are what make the PR review flow work
+# (docs/TDD.md §6.2) — a reviewer sees the rendered guide, not a YAML diff.
+[context.deploy-preview]
+  command = "npm run build"
+
+[context.branch-deploy]
+  command = "npm run build"
+
+# Static site: every real route is a prebuilt file, so there is no SPA
+# fallback here on purpose. An unknown path should 404, not silently
+# render the home page.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Pagefind's index is content-hashed and safe to cache hard.
+[[headers]]
+  for = "/pagefind/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

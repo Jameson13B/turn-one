@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import { categoryTileClass, categoryTileCode } from '../lib/category-tiles';
 
 const games = (await getCollection('games')).sort((a, b) =>
   a.data.title.localeCompare(b.data.title)
@@ -8,7 +9,7 @@ const games = (await getCollection('games')).sort((a, b) =>
 ---
 
 <Base title="Turn One — quick manuals for tabletop games">
-  <h1 class="font-[var(--font-display)] text-3xl font-bold tracking-tight">
+  <h1 class="font-display text-3xl font-bold tracking-tight">
     Know enough by turn one.
   </h1>
   <p class="mt-3 max-w-prose text-[var(--color-ink-soft)]">
@@ -19,8 +20,19 @@ const games = (await getCollection('games')).sort((a, b) =>
   <ul class="mt-8 divide-y divide-[var(--color-rule)] border-y border-[var(--color-rule)]" role="list">
     {games.map((game) => (
       <li>
-        <a href={`/g/${game.id}`} class="flex items-baseline justify-between gap-4 py-3 no-underline">
-          <span class="font-[var(--font-display)] font-semibold">{game.data.title}</span>
+        <a href={`/g/${game.id}`} class="flex items-center justify-between gap-4 py-3 no-underline">
+          <span class="flex items-center gap-3">
+            <span
+              class={`grid h-11 w-11 shrink-0 place-items-center rounded font-display text-sm font-bold text-[var(--color-tile-contrast)] ${categoryTileClass[game.data.category] ?? 'bg-cat-other'}`}
+              aria-hidden="true"
+              transition:name={`tile-${game.id}`}
+            >
+              {categoryTileCode(game.data.category)}
+            </span>
+            <span class="font-display font-semibold" transition:name={`title-${game.id}`}>
+              {game.data.title}
+            </span>
+          </span>
           <span class="text-xs uppercase tracking-wide text-[var(--color-ink-soft)]">
             {game.data.category}
           </span>

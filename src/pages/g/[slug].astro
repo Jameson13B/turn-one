@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { categoryTileClass, categoryTileCode } from '../../lib/category-tiles';
 
 export async function getStaticPaths() {
   const games = await getCollection('games');
@@ -22,7 +23,18 @@ const time = `${g.snapshot.time.min}–${g.snapshot.time.max} min`;
 
 <Base title={`${g.title} — Turn One`} description={g.snapshot.premise}>
   <article data-pagefind-body>
-    <h1 class="font-[var(--font-display)] text-3xl font-bold tracking-tight">{g.title}</h1>
+    <div class="flex items-center gap-3">
+      <span
+        class={`grid h-11 w-11 shrink-0 place-items-center rounded font-display text-sm font-bold text-[var(--color-tile-contrast)] ${categoryTileClass[g.category] ?? 'bg-cat-other'}`}
+        aria-hidden="true"
+        transition:name={`tile-${game.id}`}
+      >
+        {categoryTileCode(g.category)}
+      </span>
+      <h1 class="font-display text-3xl font-bold tracking-tight" transition:name={`title-${game.id}`}>
+        {g.title}
+      </h1>
+    </div>
 
     {/* aliases are indexed so "Perudo" finds Liar's Dice — TDD §7.3 */}
     {g.aliases.length > 0 && (
@@ -38,6 +50,9 @@ const time = `${g.snapshot.time.min}–${g.snapshot.time.max} min`;
       {g.complexity && (
         <li class="rounded bg-[var(--color-felt-soft)] px-2 py-1">Weight {g.complexity}</li>
       )}
+      {g.snapshot.equipment.length > 0 && (
+        <li class="rounded bg-[var(--color-felt-soft)] px-2 py-1">{g.snapshot.equipment.join(', ')}</li>
+      )}
     </ul>
     <p class="mt-3 text-[var(--color-ink-soft)]">{g.snapshot.premise}</p>
 
@@ -47,7 +62,7 @@ const time = `${g.snapshot.time.min}–${g.snapshot.time.max} min`;
         id="mode-refresher"
         type="button"
         aria-pressed="true"
-        class="rounded border border-[var(--color-felt)] px-3 py-1 text-sm font-medium"
+        class="rounded border border-[var(--color-rule)] px-3 py-2 text-sm text-[var(--color-ink-soft)] transition-[color,background-color,border-color] duration-150 aria-pressed:border-[var(--color-felt)] aria-pressed:bg-[var(--color-felt)] aria-pressed:font-medium aria-pressed:text-[var(--color-felt-contrast)] motion-reduce:transition-none"
       >
         Refresher
       </button>
@@ -55,46 +70,50 @@ const time = `${g.snapshot.time.min}–${g.snapshot.time.max} min`;
         id="mode-teach"
         type="button"
         aria-pressed="false"
-        class="rounded border border-[var(--color-rule)] px-3 py-1 text-sm"
+        class="rounded border border-[var(--color-rule)] px-3 py-2 text-sm text-[var(--color-ink-soft)] transition-[color,background-color,border-color] duration-150 aria-pressed:border-[var(--color-felt)] aria-pressed:bg-[var(--color-felt)] aria-pressed:font-medium aria-pressed:text-[var(--color-felt-contrast)] motion-reduce:transition-none"
       >
         The Teach
       </button>
     </div>
 
-    <div id="guide" data-mode="refresher">
+    <div id="guide" data-mode="refresher" class="[perspective:1000px]">
       <!-- 2. Goal -->
       <section class="mt-8">
-        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Goal</h2>
+        <h2 class="font-display text-base font-semibold text-[var(--color-ink-soft)]">Goal</h2>
         <p class="mt-2 text-lg">{g.goal}</p>
       </section>
 
       <!-- 3. Setup — hidden in Refresher -->
-      <section class="mt-8" data-teach-only>
-        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Setup</h2>
-        <ol class="mt-2 list-decimal space-y-1 pl-5">
-          {g.setup.map((step) => <li>{step}</li>)}
-        </ol>
+      <section class="grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none" data-teach-only>
+        <div class="overflow-hidden pt-8 origin-top" data-flip-inner>
+          <h2 class="font-display text-base font-semibold text-[var(--color-ink-soft)]">Setup</h2>
+          <ol class="mt-2 list-decimal space-y-1 pl-5">
+            {g.setup.map((step) => <li>{step}</li>)}
+          </ol>
+        </div>
       </section>
 
       <!-- 4. The Loop -->
       <section class="mt-8">
-        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">On your turn</h2>
+        <h2 class="font-display text-base font-semibold text-[var(--color-ink-soft)]">On your turn</h2>
         <ol class="mt-2 list-decimal space-y-1 pl-5">
           {g.loop.map((step) => <li>{step}</li>)}
         </ol>
       </section>
 
       <!-- 5. Key Rules — hidden in Refresher -->
-      <section class="mt-8" data-teach-only>
-        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Key rules</h2>
-        <ul class="mt-2 list-disc space-y-1 pl-5">
-          {g.key_rules.map((rule) => <li>{rule}</li>)}
-        </ul>
+      <section class="grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none" data-teach-only>
+        <div class="overflow-hidden pt-8 origin-top" data-flip-inner>
+          <h2 class="font-display text-base font-semibold text-[var(--color-ink-soft)]">Key rules</h2>
+          <ul class="mt-2 list-disc space-y-1 pl-5">
+            {g.key_rules.map((rule) => <li>{rule}</li>)}
+          </ul>
+        </div>
       </section>
 
       <!-- 7. Commonly Forgotten — visually distinct, TDD §4.1 -->
-      <section class="mt-8 rounded border border-[var(--color-rule)] border-l-4 border-l-[var(--color-brass)] bg-[var(--color-surface)] p-4">
-        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-brass)]">Commonly forgotten</h2>
+      <section class="mt-8 rounded border border-[var(--color-rule)] bg-[var(--color-brass-soft)] p-4">
+        <h2 class="font-display text-base font-semibold text-[var(--color-brass)]">Commonly forgotten</h2>
         <ul class="mt-2 list-disc space-y-1 pl-5">
           {g.forgotten.map((item) => <li>{item}</li>)}
         </ul>
@@ -102,7 +121,7 @@ const time = `${g.snapshot.time.min}–${g.snapshot.time.max} min`;
 
       <!-- 6. Ending & Scoring -->
       <section class="mt-8">
-        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Ending &amp; scoring</h2>
+        <h2 class="font-display text-base font-semibold text-[var(--color-ink-soft)]">Ending &amp; scoring</h2>
         <p class="mt-2">{g.ending.trigger}</p>
         <ul class="mt-2 list-disc space-y-1 pl-5">
           {g.ending.scoring.map((item) => <li>{item}</li>)}
@@ -110,40 +129,46 @@ const time = `${g.snapshot.time.min}–${g.snapshot.time.max} min`;
       </section>
 
       <!-- 8. Tips — hidden in Refresher -->
-      <section class="mt-8" data-teach-only>
-        <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Tips</h2>
-        <ul class="mt-2 list-disc space-y-1 pl-5">
-          {g.tips.map((tip) => <li>{tip}</li>)}
-        </ul>
+      <section class="grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none" data-teach-only>
+        <div class="overflow-hidden pt-8 origin-top" data-flip-inner>
+          <h2 class="font-display text-base font-semibold text-[var(--color-ink-soft)]">Tips</h2>
+          <ul class="mt-2 list-disc space-y-1 pl-5">
+            {g.tips.map((tip) => <li>{tip}</li>)}
+          </ul>
+        </div>
       </section>
 
       <!-- 9. Variants — hidden in Refresher -->
       {g.variants.length > 0 && (
-        <section class="mt-8" data-teach-only>
-          <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Variants</h2>
-          <dl class="mt-2 space-y-2">
-            {g.variants.map((v) => (
-              <div>
-                <dt class="font-semibold">{v.name}</dt>
-                <dd class="text-[var(--color-ink-soft)]">{v.text}</dd>
-              </div>
-            ))}
-          </dl>
+        <section class="grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none" data-teach-only>
+          <div class="overflow-hidden pt-8 origin-top" data-flip-inner>
+            <h2 class="font-display text-base font-semibold text-[var(--color-ink-soft)]">Variants</h2>
+            <dl class="mt-2 space-y-2">
+              {g.variants.map((v) => (
+                <div>
+                  <dt class="font-semibold">{v.name}</dt>
+                  <dd class="text-[var(--color-ink-soft)]">{v.text}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </section>
       )}
 
       <!-- 10. Glossary — hidden in Refresher -->
       {g.glossary.length > 0 && (
-        <section class="mt-8" data-teach-only>
-          <h2 class="font-[var(--font-display)] text-sm font-semibold uppercase tracking-widest text-[var(--color-ink-soft)]">Glossary</h2>
-          <dl class="mt-2 space-y-1">
-            {g.glossary.map((entry) => (
-              <div>
-                <dt class="inline font-semibold">{entry.term}. </dt>
-                <dd class="inline text-[var(--color-ink-soft)]">{entry.definition}</dd>
-              </div>
-            ))}
-          </dl>
+        <section class="grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none" data-teach-only>
+          <div class="overflow-hidden pt-8 origin-top" data-flip-inner>
+            <h2 class="font-display text-base font-semibold text-[var(--color-ink-soft)]">Glossary</h2>
+            <dl class="mt-2 space-y-1">
+              {g.glossary.map((entry) => (
+                <div>
+                  <dt class="inline font-semibold">{entry.term}. </dt>
+                  <dd class="inline text-[var(--color-ink-soft)]">{entry.definition}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </section>
       )}
     </div>
@@ -154,7 +179,7 @@ const time = `${g.snapshot.time.min}–${g.snapshot.time.max} min`;
       {g.rulebook_url && (
         <> <a href={g.rulebook_url} rel="nofollow noopener" class="underline">Official rules</a>.</>
       )}
-      Something wrong? <a href="/report" class="underline">Tell us</a>.
+      Something wrong? <a href={`https://github.com/Jameson13B/turn-one/issues/new?title=${encodeURIComponent(`Guide issue: ${g.title}`)}`} rel="nofollow noopener" class="underline">Tell us</a>.
     </p>
   </article>
 </Base>
@@ -164,13 +189,105 @@ const time = `${g.snapshot.time.min}–${g.snapshot.time.max} min`;
   const guide = document.getElementById('guide');
   const refresherBtn = document.getElementById('mode-refresher');
   const teachBtn = document.getElementById('mode-teach');
+  const REDUCE_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function apply(mode: string) {
+  // A tiny damped-spring integrator — mass/stiffness/damping, no library.
+  // Returns the sampled position at each simulated 60fps step from `from`
+  // to `to`; feeding these straight in as WAAPI keyframes (with a linear
+  // overall easing) is what makes the motion feel physical instead of a
+  // single canned cubic-bezier.
+  function springSamples(
+    from: number,
+    to: number,
+    { stiffness = 220, damping = 24, mass = 1, maxSamples = 40 }: Partial<{ stiffness: number; damping: number; mass: number; maxSamples: number }> = {}
+  ): number[] {
+    const dt = 1 / 60;
+    const samples = [from];
+    let x = from;
+    let v = 0;
+    for (let i = 0; i < maxSamples; i++) {
+      const a = (-stiffness * (x - to) - damping * v) / mass;
+      v += a * dt;
+      x += v * dt;
+      samples.push(x);
+      if (Math.abs(to - x) < 0.001 && Math.abs(v) < 0.001) break;
+    }
+    samples.push(to);
+    return samples;
+  }
+
+  // Revealing a section is a page lifting into view, not a slide: a subtle
+  // 3D tilt (rotateX) settles from a damped spring while the grid track
+  // (see setSectionOpen) handles the height. Closing is quick and plain —
+  // it's about to disappear, so it doesn't need the same physicality.
+  function flipOpen(inner: HTMLElement) {
+    if (REDUCE_MOTION) return;
+    const rot = springSamples(-6, 0, { stiffness: 210, damping: 26 });
+    const n = rot.length;
+    inner.animate(
+      rot.map((deg, i) => ({ transform: `rotateX(${deg}deg)`, opacity: i / (n - 1) })),
+      { duration: 320, easing: 'linear', fill: 'both' }
+    );
+  }
+
+  function flipClose(inner: HTMLElement) {
+    if (REDUCE_MOTION) return;
+    inner.animate(
+      [
+        { transform: 'rotateX(0deg)', opacity: 1 },
+        { transform: 'rotateX(-4deg)', opacity: 0 },
+      ],
+      { duration: 180, easing: 'ease-in', fill: 'both' }
+    );
+  }
+
+  // Opening a section is a page-turn, not a snap: expand/collapse the row
+  // track so the extra detail unfolds in place instead of jumping.
+  function setSectionOpen(el: HTMLElement, open: boolean, animate: boolean) {
+    const inner = el.firstElementChild as HTMLElement | null;
+    if (!animate) {
+      el.hidden = !open;
+      el.style.gridTemplateRows = open ? '1fr' : '0fr';
+      return;
+    }
+    if (open) {
+      el.hidden = false;
+      el.style.gridTemplateRows = '0fr';
+      el.getBoundingClientRect();
+      requestAnimationFrame(() => {
+        el.style.gridTemplateRows = '1fr';
+        if (inner) flipOpen(inner);
+      });
+    } else {
+      el.style.gridTemplateRows = '0fr';
+      if (inner) flipClose(inner);
+      window.setTimeout(() => {
+        el.hidden = true;
+      }, 300);
+    }
+  }
+
+  // Button press: an instant compress on press, then a springy release —
+  // the same physical vocabulary as the section reveal, on the control
+  // that triggers it.
+  function pressSpring(button: HTMLElement) {
+    if (REDUCE_MOTION) return;
+    button.style.transform = 'scale(0.96)';
+    requestAnimationFrame(() => {
+      const scale = springSamples(0.96, 1, { stiffness: 300, damping: 18 });
+      button.animate(
+        scale.map((s) => ({ transform: `scale(${s})` })),
+        { duration: 260, easing: 'linear', fill: 'forwards' }
+      );
+    });
+  }
+
+  function apply(mode: string, animate = true) {
     if (!guide) return;
     guide.dataset.mode = mode;
     const teach = mode === 'teach';
     document.querySelectorAll<HTMLElement>('[data-teach-only]').forEach((el) => {
-      el.hidden = !teach;
+      setSectionOpen(el, teach, animate);
     });
     refresherBtn?.setAttribute('aria-pressed', String(!teach));
     teachBtn?.setAttribute('aria-pressed', String(teach));
@@ -187,8 +304,14 @@ const time = `${g.snapshot.time.min}–${g.snapshot.time.max} min`;
   } catch {
     /* ignore */
   }
-  apply(saved);
+  apply(saved, false);
 
-  refresherBtn?.addEventListener('click', () => apply('refresher'));
-  teachBtn?.addEventListener('click', () => apply('teach'));
+  refresherBtn?.addEventListener('click', () => {
+    if (refresherBtn) pressSpring(refresherBtn);
+    apply('refresher');
+  });
+  teachBtn?.addEventListener('click', () => {
+    if (teachBtn) pressSpring(teachBtn);
+    apply('teach');
+  });
 </script>
